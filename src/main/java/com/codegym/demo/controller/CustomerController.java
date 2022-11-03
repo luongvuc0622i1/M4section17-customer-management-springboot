@@ -61,4 +61,23 @@ public class CustomerController {
         modelAndView.addObject("message", "Customer updated successfully");
         return modelAndView;
     }
+
+    @GetMapping("/delete-customer/{id}")
+    public ModelAndView showDeleteForm(@PathVariable Long id) {
+        Optional<Customer> customer = customerService.findById(id);
+        if (customer.isPresent()) {
+            ModelAndView modelAndView = new ModelAndView("/customer/delete");
+            modelAndView.addObject("customer", customer.get());
+            return modelAndView;
+
+        } else {
+            return new ModelAndView("/customer/error.404");
+        }
+    }
+
+    @PostMapping("/delete-customer")
+    public String deleteCustomer(@ModelAttribute("customer") Customer customer) {
+        customerService.remove(customer.getId());
+        return "redirect:customers";
+    }
 }
